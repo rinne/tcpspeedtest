@@ -33,6 +33,7 @@ var KeepTime = require('keeptime');
 	var timeoutMs = undefined;
 	var listener = undefined;
 	var interval = undefined;
+	var bufLen = undefined;
 	
 	while ((av[0] !== undefined) && (m = av[0].match(/^--([^=]+)(=(.*))?$/))) {
 		av.shift();
@@ -79,6 +80,45 @@ var KeepTime = require('keeptime');
 			}
 			interval = Number(optarg);
 			break;
+		case 'write-length':
+			if ((optarg === undefined) ||
+				(! (m = optarg.match(/^([1-9]\d*)([kKmMgGtTpPeE]?)$/))) ||
+				(bufLen !== undefined)) {
+				throw new Error(usage);
+			}
+			bufLen = Number(m[1]);
+			switch (m[2]) {
+			case '':
+				break;
+			case 'k':
+			case 'K':
+				bufLen *= 1024;
+				break;
+			case 'm':
+			case 'M':
+				bufLen *= 1024 * 1024;
+				break;
+			case 'g':
+			case 'G':
+				bufLen *= 1024 * 1024 * 1024;
+				break;
+			case 't':
+			case 'T':
+				bufLen *= 1024 * 1024 * 1024 * 1024;
+				break;
+			case 'p':
+			case 'P':
+				bufLen *= 1024 * 1024 * 1024 * 1024 * 1024;
+				break;
+			case 'e':
+			case 'E':
+				bufLen *= 1024 * 1024 * 1024 * 1024 * 1024 * 1024;
+				break;
+			}
+			if (bufLen > (64 * 1024 * 1024)) {
+				throw new Error(usage);
+			}
+			break;
 		case 'nodelay':
 			if (noDelay !== undefined) {
 				throw new Error(usage);
@@ -116,7 +156,10 @@ var KeepTime = require('keeptime');
 	if (noDelay === undefined) {
 		noDelay = false;
 	}
-	
+	if (bufLen === undefined) {
+		bufLen = 64 * 1024;
+	}
+
 	switch (av.length) {
 	case 2:
 		addr = av.shift();
@@ -152,7 +195,11 @@ var KeepTime = require('keeptime');
 
 	var buf = undefined;
 	if (generator) {
-		var buf = '1234567890abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ+-';
+		var buf = '123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
+		buf = buf.repeat(Math.ceil(bufLen / buf.length));
+		if (buf.length > bufLen) {
+			buf = buf.slice(0, bufLen);
+		}
 		while (buf.length < (1024 * 1024)) {
 			buf = buf + buf;
 		}

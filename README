@@ -54,6 +54,9 @@ OPTIONS
                     nodelay mode. --nodelay=off does not set the
                     socket to nodelay mode. Default value is off.
 
+--write-length=<#>  Length of the write buffer used for individual
+                    writes. The default is 64k.
+
 
 AUTHOR
 ======
