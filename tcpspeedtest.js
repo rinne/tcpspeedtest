@@ -27,6 +27,7 @@ var KeepTime = require('keeptime');
 	var usage = 'Usage: node tcpspeedtest.js [--server | --client] [--generator | --sink] [addr] port'
 	var generator = undefined;
 	var server = undefined;
+	var noDelay = undefined;
 	var connection = new Set();
 	var timeoutId = undefined;
 	var timeoutMs = undefined;
@@ -78,6 +79,28 @@ var KeepTime = require('keeptime');
 			}
 			interval = Number(optarg);
 			break;
+		case 'nodelay':
+			if (noDelay !== undefined) {
+				throw new Error(usage);
+			}
+			if (optarg === undefined) {
+				optarg = 'yes';
+			}
+			switch (optarg) {
+			case 'on':
+			case 'yes':
+			case 'enabled':
+				noDelay = true;
+				break;
+			case 'off':
+			case 'no':
+			case 'disabled':
+				noDelay = false;
+				break;
+			default:
+				throw new Error(usage);
+			}
+			break;
 		default:
 			throw new Error(usage);
 		}
@@ -89,6 +112,9 @@ var KeepTime = require('keeptime');
 	}
 	if (generator === undefined) {
 		generator = (! server);
+	}
+	if (noDelay === undefined) {
+		noDelay = false;
 	}
 	
 	switch (av.length) {
@@ -233,7 +259,7 @@ var KeepTime = require('keeptime');
 						read: { bytes: 0, lastT: 0, lastB: 0, bps: undefined },
 						write: { bytes: 0, lastT: 0, lastB: 0, bps: undefined } };
 			console.log('new connection #' + ctx.id + ' from ' + s.remoteAddress);
-			ctx.s.setNoDelay(true);
+			ctx.s.setNoDelay(noDelay);
 			ctx.s.on('end', function() { end(ctx); });
 			ctx.s.on('close', function() { end(ctx); });
 			ctx.s.on('error', function() { ctx.error = true; end(ctx); });
@@ -261,7 +287,7 @@ var KeepTime = require('keeptime');
 				if (ctx.s === undefined) {
 					ctx.s = s;
 				}
-				ctx.s.setNoDelay(true);
+				ctx.s.setNoDelay(noDelay);
 				console.log("Connected to " + addr + ':' + port +
 							' mode is ' + (generator ? 'generator' : 'sink'));
 				ctx.timer = new KeepTime(true);

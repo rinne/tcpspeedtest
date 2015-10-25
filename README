@@ -36,18 +36,23 @@ node tcpspeedtestjs --client --sink --interval=10 remote.host.name 12345
 OPTIONS
 =======
 
---server          Run as server.
+--server            Run as server.
 
---client          Run as client. (default)
+--client            Run as client. (default)
 
---generator       Run in generator mode. (default for client)
+--generator         Run in generator mode. (default for client)
 
---sink            Run in sink mode. (default for server)
+--sink              Run in sink mode. (default for server)
 
---timeout=<sec>   Bail out after given numner of seconds.
+--timeout=<sec>     Bail out after given numner of seconds.
 
---interval=<sec>  Report the throughput approximately once in given
-                  number of seconds.
+--interval=<sec>    Report the throughput approximately once in given
+                    number of seconds.
+
+--nodelay=<on|off>  Enable or disable Nagle algorithm for TCP socket.
+                    --nodelay (i.e. --nodelay=on) sets sockets to
+                    nodelay mode. --nodelay=off does not set the
+                    socket to nodelay mode. Default value is off.
 
 
 AUTHOR
