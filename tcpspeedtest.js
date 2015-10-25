@@ -40,7 +40,7 @@ var KeepTime = require('keeptime');
 		av.shift();
 		var opt = m[1];
 		var optarg = m[3];
-		switch (opt) {
+		switch (opt.toLowerCase()) {
 		case 'generator':
 			if ((optarg !== undefined) || (generator !== undefined)) {
 				throw new Error(usage);
@@ -88,31 +88,25 @@ var KeepTime = require('keeptime');
 				throw new Error(usage);
 			}
 			bufLen = Number(m[1]);
-			switch (m[2]) {
+			switch (m[2].toLowerCase()) {
 			case '':
 				break;
 			case 'k':
-			case 'K':
 				bufLen *= 1024;
 				break;
 			case 'm':
-			case 'M':
 				bufLen *= 1024 * 1024;
 				break;
 			case 'g':
-			case 'G':
 				bufLen *= 1024 * 1024 * 1024;
 				break;
 			case 't':
-			case 'T':
 				bufLen *= 1024 * 1024 * 1024 * 1024;
 				break;
 			case 'p':
-			case 'P':
 				bufLen *= 1024 * 1024 * 1024 * 1024 * 1024;
 				break;
 			case 'e':
-			case 'E':
 				bufLen *= 1024 * 1024 * 1024 * 1024 * 1024 * 1024;
 				break;
 			}
@@ -127,7 +121,7 @@ var KeepTime = require('keeptime');
 			if (optarg === undefined) {
 				optarg = 'yes';
 			}
-			switch (optarg) {
+			switch (optarg.toLowerCase()) {
 			case 'on':
 			case 'yes':
 			case 'enabled':
