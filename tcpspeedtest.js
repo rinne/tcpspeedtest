@@ -197,7 +197,13 @@ var KeepTime = require('keeptime');
 	var buf = undefined;
 	if (generator) {
 		var buf = '23456789abcdefghijklmnopqrstuvwxyzABCEFGHJKLMNPQRSTUVWXYZ';
-		buf = buf.repeat(Math.ceil(bufLen / buf.length));
+		if (String.prototype.repeat) {
+			buf = buf.repeat(Math.ceil(bufLen / buf.length));
+		} else {
+			while (buf.length < bufLen) {
+				buf += buf;
+			}
+		}
 		if (buf.length > bufLen) {
 			buf = buf.slice(0, bufLen);
 		}
