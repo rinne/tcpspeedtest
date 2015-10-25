@@ -18,22 +18,23 @@ var KeepTime = require('keeptime');
 
 (function(av) {
 
-	var addr = undefined;
-	var port = undefined;
-	var count = 0;
-	var m;
 	av.shift();
 	var av0 = av.shift();
 	var usage = 'Usage: node tcpspeedtest.js [--server | --client] [--generator | --sink] [addr] port'
+
+	var addr = undefined;
+	var port = undefined;
+	var count = 0;
 	var generator = undefined;
 	var server = undefined;
 	var noDelay = undefined;
-	var connection = new Set();
 	var timeoutId = undefined;
 	var timeoutMs = undefined;
 	var listener = undefined;
 	var interval = undefined;
 	var bufLen = undefined;
+	var connection = new Set();
+	var m;
 	
 	while ((av[0] !== undefined) && (m = av[0].match(/^--([^=]+)(=(.*))?$/))) {
 		av.shift();
