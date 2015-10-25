@@ -1,0 +1,62 @@
+tcpspeedtest.js - Simple TCP network throughput tester
+
+
+IN A NUTSHELL
+=============
+
+Both, the server and client can run either in sink or generator
+mode. Sink simply reads the input from socket and ignores
+it. Generator outputs dummy data to socket as fast as possible while
+also reading (and ignoring) the possible input. The sink mode is
+default for the server and the generator mode is default for the
+client.
+
+Run `npm install keeptime` to install the required package to the
+tcpspeedtest directory.
+
+EXAMPLES
+========
+
+# Run server listening port 12345 of all devices in sink mode.
+node tcpspeedtest.js --server 12345
+
+# Run server listening port 12345 of the loopback device in generator mode.
+node tcpspeedtest.js --server --generator 127.0.0.1 12345
+
+# Run client in generator mode connecting to the localhost port 12345
+# and report throughput every two seconds and exit after 60 seconds.
+node tcpspeedtest.js --timeout=60 --interval=2 127.0.0.1 12345
+
+# Run client in sink mode (most likely the server is then run as
+# generator) instead of generator and specify client mode explicitly
+# in command line.
+node tcpspeedtestjs --client --sink --interval=10 remote.host.name 12345
+
+
+OPTIONS
+=======
+
+--server          Run as server.
+
+--client          Run as client. (default)
+
+--generator       Run in generator mode. (default for client)
+
+--sink            Run in sink mode. (default for server)
+
+--timeout=<sec>   Bail out after given numner of seconds.
+
+--interval=<sec>  Report the throughput approximately once in given
+                  number of seconds.
+
+
+AUTHOR
+======
+
+Timo J. Rinne <tri@iki.fi>
+
+
+LICENSE
+=======
+
+GPL-2.0
