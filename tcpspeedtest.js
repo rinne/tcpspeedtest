@@ -2,9 +2,9 @@
  *  tcpspeedtest.js
  *
  *  A simple client/server implementation to measure TCP throughput
- *  between hosts. A test data is sent over the network either from
+ *  between hosts. Test data is sent over the network either from
  *  server to client, client to server, or to both directions
- *  simultaneously. This is pretty simple hack.
+ *  simultaneously. This is a pretty simple hack.
  *
  *  Copyright (C) 2015 Timo J. Rinne <tri@iki.fi>
  *
@@ -83,7 +83,7 @@ var KeepTime = require('keeptime');
 			break;
 		case 'write-length':
 			if ((optarg === undefined) ||
-				(! (m = optarg.match(/^([1-9]\d*)([kKmMgGtTpPeE]?)$/))) ||
+				(! (m = optarg.match(/^([1-9]\d*)([a-zA-Z]?)$/))) ||
 				(bufLen !== undefined)) {
 				throw new Error(usage);
 			}
@@ -109,6 +109,14 @@ var KeepTime = require('keeptime');
 			case 'e':
 				bufLen *= 1024 * 1024 * 1024 * 1024 * 1024 * 1024;
 				break;
+			case 'z':
+				bufLen *= 1024 * 1024 * 1024 * 1024 * 1024 * 1024 * 1024;
+				break;
+			case 'y':
+				bufLen *= 1024 * 1024 * 1024 * 1024 * 1024 * 1024 * 1024 * 1024;
+				break;
+			default:
+				throw new Error(usage);
 			}
 			if (bufLen > (64 * 1024 * 1024)) {
 				throw new Error(usage);
