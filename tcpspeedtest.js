@@ -181,16 +181,22 @@ var KeepTime = require('keeptime');
 		throw new Error('Bad port. ' + usage);
 	}
 	port = Number(m[1]);
+
+	function isIPv6(addr) {
+		var m = addr.match(/^(((([0-9a-fA-F]){1,4}:){7}([0-9a-fA-F]))|(([0-9a-fA-F]{1,4}:){1}(:([0-9a-fA-F]{1,4})){1,6})|(([0-9a-fA-F]{1,4}:){2}(:([0-9a-fA-F]{1,4})){1,5})|(([0-9a-fA-F]{1,4}:){3}(:([0-9a-fA-F]{1,4})){1,4})|(([0-9a-fA-F]{1,4}:){4}(:([0-9a-fA-F]{1,4})){1,3})|(([0-9a-fA-F]{1,4}:){5}(:([0-9a-fA-F]{1,4})){1,2})|(([0-9a-fA-F]{1,4}:){6}(:([0-9a-fA-F]{1,4})){1})|(:(:([0-9a-fA-F]{1,4})){1,7})|((([0-9a-fA-F]{1,4}):){1,7}:)|(::))$/);
+		return m ? true : false;
+	}
+
+	function isIPv4(addr) {
+		var m = addr.match(/^(\d{1,3})\.(\d{1,3})\.(\d{1,3})\.(\d{1,3})$/);
+		return ((m && (m[1] <= 255) && (m[2] <= 255) && (m[3] <= 255) && (m[4] <= 255)) ? true : false);
+	}
+
 	if (addr !== undefined) {
 		if (server) {
-			m = addr.match(/^(\d{1,3})\.(\d{1,3})\.(\d{1,3})\.(\d{1,3})$/);
-			if ((! m) || (m[1] > 255) || (m[2] > 255) || (m[3] > 255) || (m[4] > 255)) {
+			if (! (isIPv4(addr) || isIPv6(addr))) {
 				throw new Error('Bad address. ' + usage);
 			}
-			addr = ((Number(m[1])).toString() + '.' +
-					(Number(m[2])).toString() + '.' +
-					(Number(m[3])).toString() + '.' +
-					(Number(m[4])).toString());
 		}
 	} else {
 		addr = server ? '0.0.0.0' : '127.0.0.1';
