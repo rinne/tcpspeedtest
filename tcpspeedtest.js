@@ -215,11 +215,7 @@ var KeepTime = require('keeptime');
 		if (buf.length > bufLen) {
 			buf = buf.slice(0, bufLen);
 		}
-		while (buf.length < (1024 * 1024)) {
-			buf = buf + buf;
-		}
 	}
-
 	function end(ctx) {
 		if (ctx.s === undefined) {
 			return;
@@ -256,9 +252,14 @@ var KeepTime = require('keeptime');
 	}
 
 	function send(ctx) {
+		var maxWrites = 64, writeOk = true;
+		if (ctx.s === undefined) {
+			return;
+		}
 		do {
+			maxWrites--;
 			ctx.write.bytes += buf.length;
-		} while(ctx.s.write(buf));
+		} while ((maxWrites > 0) && (writeOk = ctx.s.write(buf)));
 		if (interval !== undefined) {
 			var t = ctx.timer.get();
 			var dt = t - ctx.write.lastT;
@@ -277,6 +278,9 @@ var KeepTime = require('keeptime');
 							(ctx.write.bytes * 8 / t / 1024 / 1024).toFixed(2) + ' mbps (all)' +
 							' t=' + t.toFixed(2) + 's');
 			}
+		}
+		if (writeOk) {
+			setTimeout(function() { send(ctx); }, 0);
 		}
 	};
 	
